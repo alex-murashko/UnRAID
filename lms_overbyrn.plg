@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY plugin "LMS">
 <!ENTITY author "overbyrn">
-<!ENTITY plgver "1.7">
+<!ENTITY plgver "1.8">
 <!ENTITY pkgnam "lms">
 <!ENTITY pkg "/boot/packages">
 <!ENTITY plg "/boot/config/plugins/lms">
@@ -303,16 +303,20 @@ lms_install()
     sleep 3
        
     if [ "$BRANCH" = "nightly" ]; then      
-      FILENAME=`wget -q http://downloads.slimdevices.com/nightly/?ver=7.8 -q -O - | grep -i LogitechMediaServer | sed -e 's/<[a-zA-Z\/][^>]*>//g' | grep logitechmediaserver-[0-9].[0-9].[0-9]-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].tgz`
-      PARTPATH=`wget -q http://downloads.slimdevices.com/nightly/?ver=7.8 -q -O - | grep -i $FILENAME | cut -d\" -f2 | awk -F\/ '{print "/"$1"/"$2"/"$3"/"}'`
-      VERSION=`echo $FILENAME | awk -F\- '{print $2}'`
-      BUILDREV=`echo $FILENAME | awk -F\- '{print $3}' | cut -f1 -d\.`    
+      FILENAME=$(wget -q http://downloads.slimdevices.com/nightly/?ver=7.8 -q -O - | grep -i LogitechMediaServer | sed -e 's/<[a-zA-Z\/][^>]*>//g' | grep logitechmediaserver-[0-9].[0-9].[0-9]-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].tgz)
+      
+      # URL changed to include an extra path segment.  Ref: https://github.com/overbyrn/UnRAID/issues/4
+      # PARTPATH=`wget -q http://downloads.slimdevices.com/nightly/?ver=7.8 -q -O - | grep -i $FILENAME | cut -d\" -f2 | awk -F\/ '{print "/"$1"/"$2"/"$3"/"}'`
+      PARTPATH=$(wget -q http://downloads.slimdevices.com/nightly/?ver=7.8 -q -O - | grep -i $FILENAME | cut -d\" -f2 | awk -F\/ '{print "/"$2"/"$3"/"$4"/"}')      
+      
+      VERSION=$(echo $FILENAME | awk -F\- '{print $2}')
+      BUILDREV=$(echo $FILENAME | awk -F\- '{print $3}' | cut -f1 -d\.)
       echo "Downloading nightly $FILENAME to /boot/config/plugins/lms..."
       wget -q -P /boot/config/plugins/lms http://downloads.slimdevices.com/nightly$PARTPATH$FILENAME   
       INSTVER=$VERSION-$BUILDREV	  
     else   
-      LATESTSTABLE=`wget -q http://downloads.slimdevices.com -q -O - | grep LogitechMediaServer | awk '{print $5}' | cut -d\" -f2 | sed 's,/$,,' | sort -V -r | sed q`   # eg. LogitechMediaServer_v7.7.2
-      VERSION=`echo $LATESTSTABLE | cut -f3- -d\v`  # eg. 7.7.2
+      LATESTSTABLE=$(wget -q http://downloads.slimdevices.com -q -O - | grep LogitechMediaServer | awk '{print $5}' | cut -d\" -f2 | sed 's,/$,,' | sort -V -r | sed q)   # eg. LogitechMediaServer_v7.7.2
+      VERSION=$(echo $LATESTSTABLE | cut -f3- -d\v)  # eg. 7.7.2
       FILENAME="logitechmediaserver-$VERSION.tgz"   # eg. logitechmediaserver-7.7.2.tgz
       echo "Latest stable version : $VERSION"
       sleep 2 
