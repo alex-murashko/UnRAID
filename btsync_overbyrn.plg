@@ -1,9 +1,8 @@
-<?xml version='1.0' standalone='yes'?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!DOCTYPE PLUGIN [
 <!ENTITY plugin "BTSync">
 <!ENTITY author "overbyrn">
-<!ENTITY plgver "2.1">
+<!ENTITY plgver "2.0">
 <!ENTITY pkgnam "btsync">
 <!ENTITY pkg "/boot/packages">
 <!ENTITY plg "/boot/config/plugins/btsync">
@@ -12,10 +11,9 @@
 <!ENTITY ram "/usr/local/btsync">
 <!ENTITY url1 "https://raw.github.com/overbyrn/UnRAID/master">
 <!ENTITY url2 "https://dl.dropbox.com/u/572553/UnRAID">
-<!ENTITY url3 "http://download-lb.utorrent.com/endpoint/btsync/os/linux-i386/track/stable">
+<!ENTITY url3 "http://btsync.s3-website-us-east-1.amazonaws.com">
 <!ENTITY dev "false"><!-- set to "true" during plugin development -->
 ]>
-
 <PLUGIN>
 <!--
 Copyright 2013, Rich Manton (overbyrn)
@@ -67,36 +65,36 @@ rm -f /tmp/plugin-prepare
 </INLINE>
 </FILE>
 
-<FILE Name="&plg;/btsync.png">
-<URL>-q --no-check-certificate &url2;/plugin.images/btsync.png</URL>
+<FILE Name="/boot/config/plugins/btsync/btsync.png">
+<URL>-q --no-check-certificate https://dl.dropbox.com/u/572553/UnRAID/plugin.images/btsync.png</URL>
 </FILE>
 
-<FILE Name="&img;/device_status.png">
-<URL>-q --no-check-certificate &url2;/plugin.images/device_status.png</URL>
+<FILE Name="/boot/config/plugins/images/device_status.png">
+<URL>-q --no-check-certificate https://dl.dropbox.com/u/572553/UnRAID/plugin.images/device_status.png</URL>
 </FILE>
 
-<FILE Name="&img;/new_config.png">
-<URL>-q --no-check-certificate &url2;/plugin.images/new_config.png</URL>
+<FILE Name="/boot/config/plugins/images/new_config.png">
+<URL>-q --no-check-certificate https://dl.dropbox.com/u/572553/UnRAID/plugin.images/new_config.png</URL>
 </FILE>
 
-<FILE Name="&img;/information.png">
-<URL>-q --no-check-certificate &url2;/plugin.images/information.png</URL>
+<FILE Name="/boot/config/plugins/images/information.png">
+<URL>-q --no-check-certificate https://dl.dropbox.com/u/572553/UnRAID/plugin.images/information.png</URL>
 </FILE>
 
-<FILE Name="&plg;/btsync_i386.tar.gz">
-<URL>-q --no-check-certificate &url3; -O btsync_i386.tar.gz</URL>
+<FILE Name="/boot/config/plugins/btsync/btsync_i386.tar.gz">
+<URL>-q --no-check-certificate http://btsync.s3-website-us-east-1.amazonaws.com/btsync_i386.tar.gz</URL>
 </FILE>
 
 <FILE Name="/tmp/plugin-cleanup" Run="/bin/bash">
 <INLINE>
 # delete file but don't warn if file does not exist
 rmNoWarn() {
-  test -e $1 &amp;&amp; rm $1 2>/dev/null
+  test -e $1 &amp;&amp; rm $1 2&gt;/dev/null
 }
 
 # delete directory but don't warn if directory does not exist
 rmRecursiveNoWarn() {
-  test -e $1 &amp;&amp; rm -r $1 2>/dev/null
+  test -e $1 &amp;&amp; rm -r $1 2&gt;/dev/null
 }
 
 #Remove currently installed plugin files
@@ -557,7 +555,7 @@ btsync_updateapp()
 {
   btsync_stop;
   echo "Downloading Update..."
-  wget -q -P /tmp http://download-lb.utorrent.com/endpoint/btsync/os/linux-i386/track/stable -O btsync_i386.tar.gz 2>/dev/null
+  wget -q -P /tmp http://btsync.s3-website-us-east-1.amazonaws.com/btsync_i386.tar.gz 2>/dev/null
   if [ ! -f /tmp/btsync_i386.tar.gz ]; then
     echo "Download failed, update aborted!"
     sleep 2
@@ -567,11 +565,10 @@ btsync_updateapp()
     echo "Updating BTSync Application..."
     sleep 1
     tar -zxvf /tmp/btsync_i386.tar.gz -C /tmp 2>/dev/null
-    mv -f /tmp/btsync /usr/local/btsync/btsync 2>/dev/null
+    cp -f /tmp/btsync /usr/local/btsync/btsync 2>/dev/null
     chown nobody:users /usr/local/btsync/btsync 2>/dev/null
     chmod 775 /usr/local/btsync/btsync 2>/dev/null
-    mv -f /tmp/btsync_i386.tar.gz /boot/config/plugins/btsync 2>/dev/null
-    rm -f /tmp/LICENSE.TXT
+    cp -f /tmp/btsync_i386.tar.gz /boot/config/plugins/btsync 2>/dev/null   
     echo "...OK"
     sleep 1
   fi
@@ -608,9 +605,7 @@ btsync_appver()
 	  fi	
     ;;
     'remote')
-      #21/03/2014: changed download URL / method to determine online version number
-      #VERSION=$(wget http://btsync.s3-website-us-east-1.amazonaws.com -q -O - | grep -i version | sed -e 's/<h3>BitTorrent Sync version //I' -e 's/<\/h3>//I')
-      VERSION=$(wget http://www.bittorrent.com/sync/downloads -q -O - | grep -i ">i386<" | awk 'NR==2 {print $2}' RS=span FS='[<>]')
+      VERSION=$(wget http://btsync.s3-website-us-east-1.amazonaws.com -q -O - | grep -i version | sed -e 's/<h3>BitTorrent Sync version //I' -e 's/<\/h3>//I')
       if [ "$VERSION" == "" ]; then
         VERSION=Unknown
       fi
@@ -1189,20 +1184,20 @@ source /boot/config/plugins/btsync/btsync.cfg
 cd /tmp
 
 # copy and untar application binary
-cp &plg;/btsync_i386.tar.gz /tmp 2>/dev/null
-tar -zxvf btsync_i386.tar.gz 2>/dev/null
+cp /boot/config/plugins/btsync/btsync_i386.tar.gz /tmp 2&gt;/dev/null
+tar -zxvf btsync_i386.tar.gz 2&gt;/dev/null
 
 # copy btsync and config file to non-persistent app dir
-mkdir /usr/local/btsync 2>/dev/null
-mv /tmp/btsync &ram;/btsync 2>/dev/null
+mkdir /usr/local/btsync 2&gt;/dev/null
+mv /tmp/btsync /usr/local/btsync/btsync 2&gt;/dev/null
 
 #set ownership and permission of btsync to nobody
 echo "Setting ownership/perms of btsync..."
-chown -R nobody:users &ram; 2>/dev/null
-chmod -R 775 &ram; 2>/dev/null
+chown -R nobody:users /usr/local/btsync 2&gt;/dev/null
+chmod -R 775 /usr/local/btsync 2&gt;/dev/null
 
 # tidy tmp
-rm -f btsync_i386.tar.gz 2>/dev/null
+rm -f btsync_i386.tar.gz 2&gt;/dev/null
 rm -f LICENSE.TXT
 
 # create btsync-writable directory for pid file
@@ -1217,28 +1212,28 @@ rm /tmp/plugin-install
 <INLINE>
 Menu="NetworkServices"
 Icon="btsync.png"
-Version="&plgver;"
-Author="&author;"
+Version="2.0"
+Author="overbyrn"
 Type="php"
-Title="&plugin;"
+Title="BTSync"
 </INLINE>
 </FILE>
 
 <FILE Name="/var/log/plugins/btsync">
 <INLINE>
-&plugin; v&plgver;
+BTSync v2.0
 </INLINE>
 </FILE>
 
 <FILE Name="/tmp/plugin-development" Run="/bin/bash">
 <INLINE>
-if [ "&dev;" == "true" ]; then
+if [ "false" == "true" ]; then
   if [ -f /boot/config/plugins/btsync.php ]; then
-    rm -f &gui;/btsync/btsync.php
-    ln -s /boot/config/plugins/btsync.php &gui;/btsync/btsync.php
+    rm -f /usr/local/emhttp/plugins/btsync/btsync.php
+    ln -s /boot/config/plugins/btsync.php /usr/local/emhttp/plugins/btsync/btsync.php
   else
-    mv &gui;/btsync/btsync.php /boot/config/plugins/btsync.php
-    ln -s /boot/config/plugins/btsync.php &gui;/btsync/btsync.php
+    mv /usr/local/emhttp/plugins/btsync/btsync.php /boot/config/plugins/btsync.php
+    ln -s /boot/config/plugins/btsync.php /usr/local/emhttp/plugins/btsync/btsync.php
   fi
   if [ -f /boot/config/plugins/rc.btsync ]; then
     rm -f /etc/rc.d/rc.btsync
