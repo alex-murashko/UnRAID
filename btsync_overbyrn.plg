@@ -557,7 +557,7 @@ btsync_updateapp()
 {
   btsync_stop;
   echo "Downloading Update..."
-  wget -q -P /tmp http://btsync.s3-website-us-east-1.amazonaws.com/btsync_i386.tar.gz 2>/dev/null
+  wget -q -P /tmp http://download-lb.utorrent.com/endpoint/btsync/os/linux-i386/track/stable -O btsync_i386.tar.gz 2>/dev/null
   if [ ! -f /tmp/btsync_i386.tar.gz ]; then
     echo "Download failed, update aborted!"
     sleep 2
@@ -567,10 +567,11 @@ btsync_updateapp()
     echo "Updating BTSync Application..."
     sleep 1
     tar -zxvf /tmp/btsync_i386.tar.gz -C /tmp 2>/dev/null
-    cp -f /tmp/btsync /usr/local/btsync/btsync 2>/dev/null
+    mv -f /tmp/btsync /usr/local/btsync/btsync 2>/dev/null
     chown nobody:users /usr/local/btsync/btsync 2>/dev/null
     chmod 775 /usr/local/btsync/btsync 2>/dev/null
-    cp -f /tmp/btsync_i386.tar.gz /boot/config/plugins/btsync 2>/dev/null   
+    mv -f /tmp/btsync_i386.tar.gz /boot/config/plugins/btsync 2>/dev/null
+    rm -f /tmp/LICENSE.TXT
     echo "...OK"
     sleep 1
   fi
