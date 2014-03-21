@@ -2,7 +2,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY plugin "BTSync">
 <!ENTITY author "overbyrn">
-<!ENTITY plgver "2.0">
+<!ENTITY plgver "2.1">
 <!ENTITY pkgnam "btsync">
 <!ENTITY pkg "/boot/packages">
 <!ENTITY plg "/boot/config/plugins/btsync">
@@ -11,7 +11,7 @@
 <!ENTITY ram "/usr/local/btsync">
 <!ENTITY url1 "https://raw.github.com/overbyrn/UnRAID/master">
 <!ENTITY url2 "https://dl.dropbox.com/u/572553/UnRAID">
-<!ENTITY url3 "http://btsync.s3-website-us-east-1.amazonaws.com">
+<!ENTITY url3 "http://download-lb.utorrent.com/endpoint/btsync/os/linux-i386/track/stable">
 <!ENTITY dev "false"><!-- set to "true" during plugin development -->
 ]>
 <PLUGIN>
@@ -82,7 +82,7 @@ rm -f /tmp/plugin-prepare
 </FILE>
 
 <FILE Name="/boot/config/plugins/btsync/btsync_i386.tar.gz">
-<URL>-q --no-check-certificate http://btsync.s3-website-us-east-1.amazonaws.com/btsync_i386.tar.gz</URL>
+<URL>-q --no-check-certificate &url3; -O btsync_i386.tar.gz</URL>
 </FILE>
 
 <FILE Name="/tmp/plugin-cleanup" Run="/bin/bash">
@@ -555,8 +555,8 @@ btsync_updateapp()
 {
   btsync_stop;
   echo "Downloading Update..."
-  wget -q -P /tmp http://btsync.s3-website-us-east-1.amazonaws.com/btsync_i386.tar.gz 2>/dev/null
-  if [ ! -f /tmp/btsync_i386.tar.gz ]; then
+  wget -q -P /tmp http://download-lb.utorrent.com/endpoint/btsync/os/linux-i386/track/stable 2>/dev/null
+  if [ ! -f /tmp/stable ]; then
     echo "Download failed, update aborted!"
     sleep 2
   else
@@ -564,11 +564,12 @@ btsync_updateapp()
     sleep 1
     echo "Updating BTSync Application..."
     sleep 1
-    tar -zxvf /tmp/btsync_i386.tar.gz -C /tmp 2>/dev/null
-    cp -f /tmp/btsync /usr/local/btsync/btsync 2>/dev/null
+    tar -zxvf /tmp/stable -C /tmp 2>/dev/null
+    mv -f /tmp/btsync /usr/local/btsync/btsync 2>/dev/null
     chown nobody:users /usr/local/btsync/btsync 2>/dev/null
     chmod 775 /usr/local/btsync/btsync 2>/dev/null
-    cp -f /tmp/btsync_i386.tar.gz /boot/config/plugins/btsync 2>/dev/null   
+    mv -f /tmp/stable /boot/config/plugins/btsync/btsync_i386.tar.gz 2>/dev/null
+    rm -f /tmp/LICENSE.TXT
     echo "...OK"
     sleep 1
   fi
@@ -605,7 +606,9 @@ btsync_appver()
 	  fi	
     ;;
     'remote')
-      VERSION=$(wget http://btsync.s3-website-us-east-1.amazonaws.com -q -O - | grep -i version | sed -e 's/<h3>BitTorrent Sync version //I' -e 's/<\/h3>//I')
+      #21/03/2014: changed download URL / method to determine online version number
+      #VERSION=$(wget http://btsync.s3-website-us-east-1.amazonaws.com -q -O - | grep -i version | sed -e 's/<h3>BitTorrent Sync version //I' -e 's/<\/h3>//I')
+      VERSION=$(wget http://www.bittorrent.com/sync/downloads -q -O - | grep -i ">i386<" | awk 'NR==2 {print $2}' RS=span FS='[<>]')
       if [ "$VERSION" == "" ]; then
         VERSION=Unknown
       fi
