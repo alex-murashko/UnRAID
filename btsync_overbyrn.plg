@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY plugin "BTSync">
 <!ENTITY author "overbyrn">
-<!ENTITY plgver "2.0">
+<!ENTITY plgver "2.1">
 <!ENTITY pkgnam "btsync">
 <!ENTITY pkg "/boot/packages">
 <!ENTITY plg "/boot/config/plugins/btsync">
@@ -12,7 +12,7 @@
 <!ENTITY ram "/usr/local/btsync">
 <!ENTITY url1 "https://raw.github.com/overbyrn/UnRAID/master">
 <!ENTITY url2 "https://dl.dropbox.com/u/572553/UnRAID">
-<!ENTITY url3 "http://btsync.s3-website-us-east-1.amazonaws.com">
+<!ENTITY url3 "http://download-lb.utorrent.com/endpoint/btsync/os/linux-i386/track/stable">
 <!ENTITY dev "false"><!-- set to "true" during plugin development -->
 ]>
 
@@ -84,7 +84,7 @@ rm -f /tmp/plugin-prepare
 </FILE>
 
 <FILE Name="&plg;/btsync_i386.tar.gz">
-<URL>-q --no-check-certificate &url3;/btsync_i386.tar.gz</URL>
+<URL>-q --no-check-certificate &url3; -O btsync_i386.tar.gz</URL>
 </FILE>
 
 <FILE Name="/tmp/plugin-cleanup" Run="/bin/bash">
@@ -607,7 +607,9 @@ btsync_appver()
 	  fi	
     ;;
     'remote')
-      VERSION=$(wget http://btsync.s3-website-us-east-1.amazonaws.com -q -O - | grep -i version | sed -e 's/<h3>BitTorrent Sync version //I' -e 's/<\/h3>//I')
+      #21/03/2014: changed download URL / method to determine online version number
+      #VERSION=$(wget http://btsync.s3-website-us-east-1.amazonaws.com -q -O - | grep -i version | sed -e 's/<h3>BitTorrent Sync version //I' -e 's/<\/h3>//I')
+      VERSION=$(wget http://www.bittorrent.com/sync/downloads -q -O - | grep -i ">i386<" | awk 'NR==2 {print $2}' RS=span FS='[<>]')
       if [ "$VERSION" == "" ]; then
         VERSION=Unknown
       fi
