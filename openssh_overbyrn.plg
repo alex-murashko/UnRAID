@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY plugin "OpenSSH">
 <!ENTITY author "overbyrn">
-<!ENTITY plgver "1.5">
+<!ENTITY plgver "1.6">
 <!ENTITY pkgnam "openssh">
 <!ENTITY pkg "/boot/packages">
 <!ENTITY plg "/boot/config/plugins/ssh">
@@ -27,7 +27,7 @@ Plugin file locations:
  /tmp/plugin-cleanup                                                    # deletion script
  /tmp/plugin-install                                                    # installation script
 
- /boot/packages/openssh-5.9p1-i486-2_slack13.37.txz                     # openssh package
+ /boot/packages/openssh-5.9p1-i486-3_slack13.37.txz                     # openssh package
  /boot/config/plugins/ssh/putty-0.62-i486-1rj.txz                       # custom putty package (puttygen dev build only)
  
  /boot/config/plugins/ssh/ssh.png                                       # icon file (copied to webgui plugin dir)
@@ -85,8 +85,8 @@ rm -f /tmp/plugin-prepare
 <URL>-q --no-check-certificate &url2;/packages/&pkgnam;/putty-0.62-i486-1rj.txz</URL>
 </FILE>
 
-<FILE Name="&pkg;/openssh-5.9p1-i486-2_slack13.37.txz" Run="upgradepkg --install-new">
-<URL>-q --no-check-certificate &url3;/openssh-5.9p1-i486-2_slack13.37.txz</URL>
+<FILE Name="&pkg;/openssh-5.9p1-i486-3_slack13.37.txz" Run="upgradepkg --install-new">
+<URL>-q --no-check-certificate &url3;/openssh-5.9p1-i486-3_slack13.37.txz</URL>
 </FILE>
 
 <FILE Name="/tmp/plugin-cleanup" Run="/bin/bash">
