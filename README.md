@@ -2,7 +2,7 @@
 
 ## Details
 
-This is my collection of plugins for UnRAID;
+This is my collection of plugins for [unRAID](http://lime-technology.com);
 
 
 * **Air Video**: Stream videos in almost any format to your iPhone, iPad and iPod touch. You don't need to copy your videos to the device just to watch them.  If the videos in your collection are not in format supported by iPhone or iPad, Air Video will convert them on fly. You don't need to wait until the entire video is converted. You can start watching it almost immediately
