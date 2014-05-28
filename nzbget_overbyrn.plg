@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY plugin "NZBget">
 <!ENTITY author "overbyrn">
-<!ENTITY plgver "1.8">
+<!ENTITY plgver "1.9">
 <!ENTITY pkgnam "nzbget">
 <!ENTITY pkg "/boot/packages">
 <!ENTITY plg "/boot/config/plugins/nzbget">
@@ -28,9 +28,9 @@ Plugin file locations:
  /tmp/plugin-install                                                            # installation script
  
  /boot/config/plugins/nzbget/nzbget-{branch}_{ver}{rev}.txz                     # source code
- /boot/config/plugins/nzbget/libpar2-0.2-i486-1rj.tgz                           # source code (incl. nzbget patches)
  
- /boot/packages/libsigc++-2.2.7-i486-1gsb.txz                                   # package dependency (par-check & repair)
+ /boot/packages/libsigc++-2.2.7-i486-1gsb.txz                                   # package dependency (required by libpar)
+ /boot/packages/libpar2-0.4-i486_64-1rj.txz                                     # package dependency (par checking)
  /boot/packages/unrar-5.0.14-i486-1cf.txz                                       # package dependency (rar support)
  /boot/packages/p7zip-9.20.1-i486-1alien.tgz                                    # package dependency (7zip support) 
 
@@ -100,8 +100,8 @@ rm -f /tmp/plugin-prepare
 <URL>-q --no-check-certificate &url2;/packages/&pkgnam;/p7zip-9.20.1-i486-1alien.tgz</URL>
 </FILE>
 
-<FILE Name="&plg;/libpar2-0.2-i486-1rj.tgz" Run="upgradepkg --install-new">
-<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/libpar2-0.2-i486-1rj.tgz</URL>
+<FILE Name="&pkg;/libpar2-0.4-i486-1rj.txz" Run="upgradepkg --install-new">
+<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/libpar2-0.4-i486-1rj.txz</URL>
 </FILE>
 
 <FILE Name="/tmp/plugin-cleanup" Run="/bin/bash">
@@ -117,10 +117,12 @@ rmRecursiveNoWarn() {
 }
 
 #Remove currently installed plugin files
-rmNoWarn /etc/rc.d/rc.nzbget                             # control script
-rmNoWarn /var/run/nzbget/nzbget.pid                      # stale pid file
-rmRecursiveNoWarn /usr/local/emhttp/plugins/nzbget       # nzbget unraid webgui integration files
-rmNoWarn /var/log/plugins/nzbget                         # record of previous plugin installation
+rmNoWarn /etc/rc.d/rc.nzbget										# control script
+rmNoWarn /var/run/nzbget/nzbget.pid									# stale pid file
+rmRecursiveNoWarn /usr/local/emhttp/plugins/nzbget					# nzbget unraid webgui integration files
+rmNoWarn /var/log/plugins/nzbget									# record of previous plugin installation
+rmNoWarn /boot/config/plugins/nzbget/libpar2-0.2-x86_64-1rj.tgz		# old self-made libpar2 0.2
+rmRecursiveNoWarn /usr/local/nzbget									# nzbget application dir (ram)
 
 rm /tmp/plugin-cleanup
 </INLINE>
