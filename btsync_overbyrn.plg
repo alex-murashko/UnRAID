@@ -2,7 +2,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY plugin "BTSync">
 <!ENTITY author "overbyrn">
-<!ENTITY plgver "2.1">
+<!ENTITY plgver "2.2">
 <!ENTITY pkgnam "btsync">
 <!ENTITY pkg "/boot/packages">
 <!ENTITY plg "/boot/config/plugins/btsync">
@@ -79,10 +79,6 @@ rm -f /tmp/plugin-prepare
 
 <FILE Name="/boot/config/plugins/images/information.png">
 <URL>-q --no-check-certificate https://dl.dropbox.com/u/572553/UnRAID/plugin.images/information.png</URL>
-</FILE>
-
-<FILE Name="/boot/config/plugins/btsync/btsync_i386.tar.gz">
-<URL>-q --no-check-certificate &url3; -O btsync_i386.tar.gz</URL>
 </FILE>
 
 <FILE Name="/tmp/plugin-cleanup" Run="/bin/bash">
@@ -1186,8 +1182,18 @@ source /boot/config/plugins/btsync/btsync.cfg
 # install btsync
 cd /tmp
 
-# copy and untar application binary
-cp /boot/config/plugins/btsync/btsync_i386.tar.gz /tmp 2&gt;/dev/null
+# get (if necessary) the btsync application. ensures the plugin will always install the latest available build
+echo "Looking for locally saved version of btsync_i386.tar.gz"
+if [[ ! -e &plg;/btsync_i386.tar.gz ]]; then
+  echo "Local saved version does not exist, downloading btsync to /tmp"
+  wget -q -P /tmp --no-check-certificate http://download-lb.utorrent.com/endpoint/btsync/os/linux-i386/track/stable -O btsync_i386.tar.gz 2>/dev/null
+  cp /tmp/btsync_i386.tar.gz /boot/config/plugins/btsync/btsync_i386.tar.gz 2&gt;/dev/null
+else
+  echo "Found an up to date locally saved version of btsync_i386.tar.gz at &plg;"
+  cp /boot/config/plugins/btsync/btsync_i386.tar.gz /tmp 2&gt;/dev/null
+fi
+
+# untar application binary
 tar -zxvf btsync_i386.tar.gz 2&gt;/dev/null
 
 # copy btsync and config file to non-persistent app dir
@@ -1210,6 +1216,7 @@ echo "Creating writable PID dir..."
 rm /tmp/plugin-install
 </INLINE>
 </FILE>
+
 
 <FILE Name="/usr/local/emhttp/plugins/btsync/btsync.page">
 <INLINE>
