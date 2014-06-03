@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY plugin "Beets">
 <!ENTITY author "overbyrn">
-<!ENTITY plgver "1.5">
+<!ENTITY plgver "1.6">
 <!ENTITY pkgnam "beets">
 <!ENTITY pkg "/boot/packages">
 <!ENTITY plg "/boot/config/plugins/beets">
@@ -34,6 +34,7 @@ Plugin file locations:
  /boot/config/plugins/beets/pip-1.4.tar.gz                              # primary python package (req. for python package downloads/installs)
  /boot/config/plugins/beets/ffmpeg.static.32bit.2013-04-06.tar.gz       # secondary package (required for beets convert)
  /boot/config/plugins/beets/mp3gain-1.4.6-i486-3sl.txz                  # secondary package (required for beets replygain)
+ /boon/config/plugins/beets/chromaprint-fpcalc-1.1-linux-i686.tar.gz    # secondary package (required for Acoustid Plugin)
 
  /boot/config/plugins/beets/beets.png                                   # icon file (copied to webgui plugin dir)
  /boot/config/plugins/images/device_status.png                          # icon file (copied to webgui plugin dir)
@@ -86,12 +87,12 @@ rm -f /tmp/plugin-prepare
 <URL>-q --no-check-certificate &url2;/plugin.images/information.png</URL>
 </FILE>
 
-<FILE Name="&pkg;/python-2.6.6-i486-1.txz" Run="upgradepkg --install-new">
-<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/python-2.6.6-i486-1.txz</URL>
+<FILE Name="&pkg;/python-2.7.3-i686-5PTr.txz" Run="upgradepkg --install-new">
+<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/python-2.7.3-i686-5PTr.txz</URL>
 </FILE>
 
-<FILE Name="&pkg;/sqlite-3.7.14.1-i486-1_slack14.0.txz" Run="upgradepkg --install-new">
-<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/sqlite-3.7.14.1-i486-1_slack14.0.txz</URL>
+<FILE Name="&pkg;/sqlite-3.7.5-i486-1.txz" Run="upgradepkg --install-new">
+<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/sqlite-3.7.5-i486-1.txz</URL>
 </FILE>
 
 <FILE Name="&pkg;/mp3gain-1.4.6-i486-3sl.txz" Run="upgradepkg --install-new">
@@ -102,16 +103,16 @@ rm -f /tmp/plugin-prepare
 <URL>-q --no-check-certificate &url2;/packages/&pkgnam;/ffmpeg.static.32bit.2013-04-06.tar.gz</URL>
 </FILE>
 
-<FILE Name="&plg;/setuptools-0.9.8-py2.6.egg">
-<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/setuptools-0.9.8-py2.6.egg</URL>
+<FILE Name="&plg;/setuptools-0.9.8-py2.7.egg">
+<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/setuptools-0.9.8-py2.7.egg</URL>
 </FILE>
 
 <FILE Name="&plg;/pip-1.4.tar.gz">
 <URL>-q --no-check-certificate &url2;/packages/&pkgnam;/pip-1.4.tar.gz</URL>
 </FILE>
 
-<FILE Name="&plg;/fpcalc">
-<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/fpcalc</URL>
+<FILE Name="&plg;/chromaprint-fpcalc-1.1-linux-i686.tar.gz">
+<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/chromaprint-fpcalc-1.1-linux-i686.tar.gz</URL>
 </FILE>
 
 <FILE Name="/tmp/plugin-cleanup" Run="/bin/bash">
@@ -821,7 +822,7 @@ function validateForm() {
 cd /tmp
 
 # install setuptools (needed for pip to install)
-&plg;/setuptools-0.9.8-py2.6.egg
+&plg;/setuptools-0.9.8-py2.7.egg
 
 # install pip
 tar zxvf &plg;/pip-1.4.tar.gz -C /tmp -o
@@ -842,10 +843,9 @@ pip install pyacoustid
 
 # install ffmpeg (needed for beets convert function)
 tar zxvf &plg;/ffmpeg.static.32bit.2013-04-06.tar.gz -C /usr/bin
-rm -f ffmpeg.static.32bit.2013-04-06.tar.gz
 
-# copy Chromaprint binary to path
-cp &plg;/fpcalc /usr/local/sbin/fpcalc
+# extract Chromaprint binary to path
+tar zxvf /boot/config/plugins/beets/chromaprint-fpcalc-1.1-linux-i686.tar.gz -C /usr/local/sbin --strip-components 1
 
 # setup global environment variable, needed so beets knows where to find its config file
 ! grep -q BEETSDIR /etc/profile &amp;&amp; sed -i '$a\export BEETSDIR='/\boot/\config/\plugins/\beets'' /etc/profile
