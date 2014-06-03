@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY plugin "DenyHosts">
 <!ENTITY author "overbyrn">
-<!ENTITY plgver "1.3">
+<!ENTITY plgver "1.4">
 <!ENTITY pkgnam "denyhosts">
 <!ENTITY pkg "/boot/packages">
 <!ENTITY plg "/boot/config/plugins/denyhosts">
@@ -29,7 +29,7 @@ Plugin file locations:
  /tmp/plugin-install                                                    # installation script
 
  /boot/config/plugins/denyhosts/DenyHosts-2.6.tar.gz                    # denyhosts source
- /packages/python-2.6.6-i486-1.txz                                      # package (mandatory)
+ /packages/python-2.7.3-i686-5PTr.txz                                   # package (mandatory)
  
  /boot/config/plugins/denyhosts/denyhosts.png                           # icon file (copied to webgui plugin dir)
  /boot/config/plugins/images/device_status.png                          # icon file (copied to webgui plugin dir)
@@ -86,8 +86,8 @@ rm -f /tmp/plugin-prepare
 <URL>-q --no-check-certificate &url2;/plugin.images/information.png</URL>
 </FILE>
 
-<FILE Name="&pkg;/python-2.6.6-i486-1.txz" Run="upgradepkg --install-new">
-<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/python-2.6.6-i486-1.txz</URL>
+<FILE Name="&pkg;/python-2.7.3-i686-5PTr.txz" Run="upgradepkg --install-new">
+<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/python-2.7.3-i686-5PTr.txz</URL>
 </FILE>
 
 <FILE Name="&plg;/DenyHosts-2.6.tar.gz">
