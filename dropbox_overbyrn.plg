@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY plugin "Dropbox">
 <!ENTITY author "overbyrn">
-<!ENTITY plgver "1.4">
+<!ENTITY plgver "1.5">
 <!ENTITY pkgnam "dropbox">
 <!ENTITY pkg "/boot/packages">
 <!ENTITY plg "/boot/config/plugins/dropbox">
@@ -31,7 +31,7 @@ Plugin file locations:
  /boot/config/plugins/dropbox/dropbox-[ver].tar.gz                      # dropbox application
  /boot/config/plugins/dropbox/dropbox.py                                # dropbox CLI control script
 
- /boot/packages/python-2.6.6-i486-1.txz                                 # python (dropbox dependency)
+ /boot/packages/python-2.7.3-i686-5PTr.txz                              # python (dropbox dependency)
 
  /boot/config/plugins/dropbox/dropbox.png                               # icon file (copied to webgui plugin dir)
  /boot/config/plugins/images/device_status.png                          # icon file (copied to webgui plugin dir)
@@ -83,8 +83,8 @@ rm -f /tmp/plugin-prepare
 <URL>-q --no-check-certificate &url2;/plugin.images/information.png</URL>
 </FILE>
 
-<FILE Name="&pkg;/python-2.6.6-i486-1.txz" Run="upgradepkg --install-new">
-<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/python-2.6.6-i486-1.txz</URL>
+<FILE Name="&pkg;/python-2.7.3-i686-5PTr.txz" Run="upgradepkg --install-new">
+<URL>-q --no-check-certificate &url2;/packages/&pkgnam;/python-2.7.3-i686-5PTr.txz</URL>
 </FILE>
 
 <FILE Name="&plg;/dropbox.py" >
@@ -300,9 +300,9 @@ dropbox_install()
 
   #Recreate symlinks in dropbox "home" location to real dirs set via plugin webgui and created above
   rm -f /usr/local/dropbox/.dropbox
-  ln -s $DROPBOXDBDIR /usr/local/dropbox/.dropbox
+  ln -sf $DROPBOXDBDIR /usr/local/dropbox/.dropbox
   rm -f /usr/local/dropbox/Dropbox
-  ln -s $DROPBOXDIR /usr/local/dropbox/Dropbox
+  ln -sf $DROPBOXDIR /usr/local/dropbox/Dropbox
 
   #Set ownership and permissions of above symlinks to nobody.  do this by setting recursively on dropbox dir, not the symlinks themselves
   chown -R nobody:users /usr/local/dropbox
@@ -581,7 +581,7 @@ shell_exec("/etc/rc.d/rc.dropbox chk4symlinks");
 
 $status = exec( "sudo -u nobody HOME=/usr/local/dropbox /usr/local/sbin/dropbox.py status" );
 switch ($status) {
-  case "Waiting to be linked to an account...":
+  case "Waiting to be linked to a Dropbox account...":
     $actlink = exec( "sudo -u nobody HOME=/usr/local/dropbox /usr/local/sbin/dropbox.py start" );
     break;
   case "Dropbox isn't running!":
@@ -607,17 +607,17 @@ $updates_exist = "false";
         <?if ($dropbox_running=="yes"):?>
             <?if (!empty($actlink)):?>
               <!-- actlink contains a value, display text as hyperlink -->
-              <span class="green"><b><a href="<?=$actlink;?>" style="color: orange; text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'" title="Click here to open activation link in new page. Then come back here and refresh page to see status." target="_blank"><?=$status;?>&nbsp;&nbsp;[Click to open link in new page]</a></b></span>
+              <span class="green"><a href="<?=$actlink;?>" style="color: orange; text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'" title="Click here to open activation link in new page. Then come back here and refresh page to see status." target="_blank"><?=$status;?>&nbsp;&nbsp;[Click to open link in new page]</a></span>
             <?else:?>
               <!-- display regular status text -->
-              <span class="green"><b><?=$status;?></b></span>
+              <span class="green"><?=$status;?></span>
             <?endif;?>
         <?else:?>
           <!-- say not running -->
-          <span class="red"><b><?=$status;?></b></span>
+          <span class="red"><?=$status;?></span>
         <?endif;?>
       <?else:?>
-        <span class="red"><b>NOT INSTALLED</b></span>
+        <span class="red">NOT INSTALLED</span>
       <?endif;?>
     </span>
   </div>
