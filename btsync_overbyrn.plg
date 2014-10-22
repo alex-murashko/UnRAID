@@ -604,7 +604,7 @@ btsync_appver()
     'remote')
       #21/03/2014: changed download URL / method to determine online version number
       #VERSION=$(wget http://btsync.s3-website-us-east-1.amazonaws.com -q -O - | grep -i version | sed -e 's/<h3>BitTorrent Sync version //I' -e 's/<\/h3>//I')
-      VERSION=$(wget http://www.bittorrent.com/sync/downloads -q -O - | grep -i ">i386<" | awk 'NR==2 {print $2}' RS=span FS='[<>]')
+      VERSION=$(wget http://www.bittorrent.com/sync/download -q -O - | grep -i ">i386<" | awk 'NR==2 {print $2}' RS=span FS='[<>]')
       if [ "$VERSION" == "" ]; then
         VERSION=Unknown
       fi
